@@ -1,7 +1,8 @@
 plugins {
     id 'java'
-    id 'maven-publish' // Essential for publishing
-    id 'distribution'   // <<< 1. ADD THIS PLUGIN
+    id 'maven-publish'
+    id 'distribution'
+    id 'com.jfrog.artifactory' version '5.1.0' // <<< 1. ADD THE ARTIFACTORY PLUGIN
 }
 
 group 'com.example.app'
@@ -11,6 +12,7 @@ repositories {
     mavenCentral()
 }
 
+// ... (dependencies and java blocks remain the same) ...
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
@@ -21,13 +23,23 @@ java {
     withSourcesJar()
 }
 
+
+// This 'publishing' block is now read by the Artifactory plugin
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            
-            // <<< 2. ADD THE ZIP AS AN ARTIFACT
             artifact tasks.distZip
+        }
+    }
+}
+
+// <<< 2. ADD THIS BLOCK
+// This tells the Artifactory plugin to use the publication defined above
+artifactory {
+    publish {
+        defaults {
+            publications('mavenJava')
         }
     }
 }
