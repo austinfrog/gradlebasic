@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'distribution'
-    id 'com.jfrog.artifactory' version '5.1.0' // <<< 1. ADD THE ARTIFACTORY PLUGIN
 }
 
 group 'com.example.app'
