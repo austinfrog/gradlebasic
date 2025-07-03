@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'maven-publish' // Essential for publishing
+    // id 'com.jfrog.artifactory' version '5.0.0' // Only if you want to use the Gradle Artifactory Plugin directly in Gradle
+}
+
+group 'com.example.app'
+version '1.0.0-SNAPSHOT' // Using SNAPSHOT for development
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Example dependency
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            // ArtifactId will be rootProject.name (my-gradle-app) by default
+            // Group and Version from above
+        }
+    }
+}
