@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'distribution'
+    // The 'distribution' plugin is not strictly needed for this custom zip
 }
 
 group 'com.example.app'
@@ -11,7 +11,6 @@ repositories {
     mavenCentral()
 }
 
-// ... (dependencies and java blocks remain the same) ...
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
@@ -22,22 +21,23 @@ java {
     withSourcesJar()
 }
 
+// <<< 1. DEFINE THE CUSTOM ZIP TASK LIKE IN YOUR EXAMPLE
+// This task creates a zip file containing all files in the project directory.
+task packageDeploy(type: Zip) {
+    // The archive file name will be '<projectName>-<version>.zip' by default
+    from project.projectDir
+    into '/'
+}
 
-// This 'publishing' block is now read by the Artifactory plugin
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-        }
-    }
-}
-
-// <<< 2. ADD THIS BLOCK
-// This tells the Artifactory plugin to use the publication defined above
-artifactory {
-    publish {
-        defaults {
-            publications('mavenJava')
+            
+            // <<< 2. ADD THE OUTPUT OF THE ZIP TASK AS AN ARTIFACT
+            // This tells the maven-publish plugin to include the zip file
+            // when you run the 'publish' or 'artifactoryPublish' task.
+            artifact packageDeploy
         }
     }
 }
