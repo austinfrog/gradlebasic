@@ -25,7 +25,7 @@ java {
 // This task creates a zip file containing all files in the project directory.
 task packageDeploy(type: Zip) {
     // The archive file name will be '<projectName>-<version>.zip' by default
-    from project.projectDir
+    from "."
     into '/'
 }
 
